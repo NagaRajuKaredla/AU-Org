@@ -1,0 +1,21 @@
+Invoice Generation:
+    1. Invoke Create Draft Invoice Rest API
+        >> Which will create only draft invoice in paypal and return invoice id.
+    2. Invoke Send Invoice Rest API 
+        >> Pass the draft invoice id
+        >> Which will activate the draft invoice and send it to customer.
+
+Subscription Plans:
+    1. Invoke Create Product Rest API
+        >> Which will return product Id.
+    2. Invoke Create Plan Rest API
+        >> Pass the Product id from Create Product API response.
+        >> Provide billing cycles details.
+        >> Which will return Plan Id.
+    3. Invoke Create Subscription Rest API
+        >> Pass the plan Id.
+        >> Provide the subscription start time.
+        >> Provide the Subscriber details.
+        >> Provide return url and cancel url.
+        >> Which will return subscription Id and webapps subscription url which will be send to customer to agree and subscribe the plan or cancel it.
+
