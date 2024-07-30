@@ -62,13 +62,13 @@ public class PayPalInvoiceServiceTest {
         Test.setMock(HttpCalloutMock.class, new PayPalMockResponseGenerator());
 
         String invoiceId = PayPalInvoiceService.createDraftInvoice(opp.Id);
-
+        PayPalInvoiceService.sendInvoice(invoiceId);
         Test.stopTest();
 
-        Opportunity updatedOpp = [SELECT Invoice_Id__c FROM Opportunity WHERE Id = :opp.Id];
+        Opportunity updatedOpp = [SELECT Invoice_Id__c, Invoice_Link__c FROM Opportunity WHERE Id = :opp.Id];
         System.assertEquals(invoiceId, updatedOpp.Invoice_Id__c, 'Invoice ID should match the one returned from PayPal');
+        System.assertEquals('https://example.com/invoice/12345', updatedOpp.Invoice_Link__c, 'Invoice link should match the one returned from PayPal');
     }
-
 
     @isTest
     class PayPalMockResponseGenerator implements HttpCalloutMock {
@@ -76,7 +76,7 @@ public class PayPalInvoiceServiceTest {
             HttpResponse res = new HttpResponse();
             res.setHeader('Content-Type', 'application/json');
             res.setStatusCode(201);
-            res.setBody('{"id": "INV123456"}');
+            res.setBody('{"id": "INV123456","href": "https://example.com/invoice/12345"}');
             return res;
         }
     }

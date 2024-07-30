@@ -1,5 +1,6 @@
 public class PayPalInvoiceService {
 
+    // Method to create draft invoice
     public static String createDraftInvoice(Id oppId) {
         if (String.isBlank(oppId)) {
             return null;
@@ -10,7 +11,7 @@ public class PayPalInvoiceService {
                 return null;
             }
 
-            string accessToken = PayPalService.getAccessToken();
+            string accessToken = PayPalAuthService.getAccessToken();
             if(string.isEmpty(accessToken)){
                 return null;
             }
@@ -50,6 +51,46 @@ public class PayPalInvoiceService {
         } catch (Exception e) {
             System.debug('Exception: ' + e.getMessage());
             return null;
+        }
+    }
+
+    // Method to send an invoice
+    public static void sendInvoice(String invoiceId) {
+        if (String.isBlank(invoiceId)) {
+            return null;
+        }
+
+        try {
+            String accessToken = PayPalAuthService.getAccessToken();
+            if (String.isEmpty(accessToken)) {
+                return null;
+            }
+
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint('callout:Paypal_Sandbox/v2/invoicing/invoices/' + invoiceId + '/send');
+            req.setMethod('POST');
+            req.setHeader('Content-Type', 'application/json');
+            req.setHeader('Authorization', 'Bearer ' + accessToken);
+            req.setHeader('Prefer', 'return=representation');
+            req.setBody(JSON.serialize(new map<string, object>{'send_to_recipient' => true}));
+
+            Http http = new Http();
+            HttpResponse res = http.send(req);
+            System.debug('Send Invoice Response: ' + res);
+
+            if (res.getStatusCode() == 200) {
+                // Successful response
+                Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                System.debug('Send Invoice Response Map: ' + responseMap);
+                Database.update(new Opportunity(Id = opp.Id, Invoice_Link__c = (String) responseMap.get('href')), false);
+                
+            } else {
+                // Log error response
+                System.debug('Error: ' + res.getStatus());
+                System.debug('Response: ' + res.getBody());
+            }
+        } catch (Exception e) {
+            System.debug('Exception: ' + e.getMessage());
         }
     }
 

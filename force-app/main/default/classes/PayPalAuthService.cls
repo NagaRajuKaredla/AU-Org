@@ -1,4 +1,4 @@
-public class PayPalService {
+public class PayPalAuthService {
     public static String getAccessToken() {
         
         HttpRequest req = new HttpRequest();

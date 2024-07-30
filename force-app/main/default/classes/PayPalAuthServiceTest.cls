@@ -28,7 +28,7 @@ private class PayPalServiceTest {
         Test.setMock(HttpCalloutMock.class, new PayPalAccessTokenMock());
 
         // Call the method to test
-        String accessToken = PayPalService.getAccessToken();
+        String accessToken = PayPalAuthService.getAccessToken();
 
         // Verify the access token is as expected
         System.assertEquals('A21AAK...xyz', accessToken);
