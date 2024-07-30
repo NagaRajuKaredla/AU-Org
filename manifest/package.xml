@@ -4,5 +4,9 @@
 		<members>Paypal_Sandbox</members>
 		<name>NamedCredential</name>
 	</types>
+	<types>
+		<members>*</members>
+		<name>ApexClass</name>
+	</types>
 	<version>60.0</version>
 </Package>
