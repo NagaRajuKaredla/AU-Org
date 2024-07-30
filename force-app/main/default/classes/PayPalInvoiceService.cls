@@ -82,7 +82,7 @@ public class PayPalInvoiceService {
                 // Successful response
                 Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
                 System.debug('Send Invoice Response Map: ' + responseMap);
-                Database.update(new Opportunity(Id = oppId, Invoice_Iink__c = (String)responseMap.get('href')), false);
+                Database.update(new Opportunity(Id = oppId, Invoice_Link__c = (String)responseMap.get('href')), false);
                 
             } else {
                 // Log error response
