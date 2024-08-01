@@ -94,36 +94,6 @@ public class PayPalInvoiceService {
         }
     }
 
-    public static void cancelInvoice(String invoiceId) {
-        // Set up the HTTP request
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Paypal_Sandbox/v2/invoicing/invoices/' + invoiceId + '/cancel');
-        req.setMethod('POST');
-        req.setHeader('Content-Type', 'application/json');
-        
-        string payload = JSON.serialize(new map<string, object>{
-            'subject' => 'Invoice Cancelled',
-            'note' => 'Cancelling the invoice',
-            'send_to_invoicer' => true,
-            'send_to_recipient' => true
-        });
-        
-        req.setBody(payload);
-
-        // Create the HTTP object
-        Http http = new Http();
-        HttpResponse res = http.send(req);
-        
-        // Check the response
-        if (res.getStatusCode() == 200) {
-            System.debug('Invoice cancelled successfully.');
-            // Update Salesforce records if needed
-        } else {
-            System.debug('Failed to cancel invoice: ' + res.getStatus() + ', ' + res.getBody());
-            // Handle error
-        }
-    }
-
     private static Opportunity getOpportunity(Id oppId) {
         List<Opportunity> oppData = [SELECT Id, Name, Amount, CurrencyIsoCode,
                                         (SELECT Id, Product2.Name, ProductCode, Quantity, UnitPrice, Discount FROM OpportunityLineItems),
